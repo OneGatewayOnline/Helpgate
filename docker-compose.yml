@@ -1,0 +1,14 @@
+services:
+  helpgate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: helpgate:latest
+    container_name: helpgate
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
