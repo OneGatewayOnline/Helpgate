@@ -30,7 +30,8 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test src/__tests__/*.test.ts",
     "test:logic": "node scripts/test-tools-logic.js",
-    "test:browser": "node scripts/test-browser.js"
+    "test:browser": "node scripts/test-browser.js",
+    "deploy": "next build && wrangler deploy"
   },
   "dependencies": {
     "clsx": "^2.1.1",
