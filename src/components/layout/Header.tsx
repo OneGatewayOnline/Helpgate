@@ -82,20 +82,20 @@ export function Header() {
           <div className="flex items-center gap-4 sm:gap-6">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-              <div className="relative w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center bg-gradient-to-tr from-blue-600/20 via-sky-500/10 to-indigo-500/20 border border-blue-500/30 p-1 group-hover:scale-105 group-hover:border-blue-500/60 shadow-md shadow-blue-500/10 transition-all">
+              <div className="relative w-9 h-9 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                 <img
                   src="/logo.png"
                   alt="HelpGate Logo"
                   width={36}
                   height={36}
-                  className="w-full h-full object-contain filter drop-shadow-[0_2px_4px_rgba(37,99,235,0.4)]"
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-lg leading-tight tracking-tight text-foreground flex items-center gap-1.5">
                   HelpGate
-                  <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
-                    Free
+                  <span className="text-[10px] font-bold uppercase tracking-tight px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                    100% Free
                   </span>
                 </span>
                 <span className="text-[10px] text-muted-foreground hidden lg:inline">

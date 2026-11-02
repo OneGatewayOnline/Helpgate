@@ -238,16 +238,8 @@ def main():
     shutil.copyfile(ico_path, os.path.join(APP_DIR, "favicon.ico"))
     print(f"Generated {ico_path} and copied to {APP_DIR}/favicon.ico")
 
-    # 6. Apple Touch Icon (180x180) with a sleek dark rounded backdrop
+    # 6. Apple Touch Icon (180x180) with a clean dark backdrop (no blue glow)
     apple_canvas = Image.new("RGBA", (180, 180), (9, 9, 11, 255))
-    apple_draw = ImageDraw.Draw(apple_canvas)
-    # Subtle gradient aura
-    apple_glow = Image.new("RGBA", (180, 180), (0, 0, 0, 0))
-    ag_draw = ImageDraw.Draw(apple_glow)
-    ag_draw.ellipse([30, 30, 150, 150], fill=(37, 99, 235, 60))
-    apple_glow = apple_glow.filter(ImageFilter.GaussianBlur(15))
-    apple_canvas = Image.alpha_composite(apple_canvas, apple_glow)
-
     apple_logo = create_centered_square(transparent_logo, 144, padding_ratio=0.03)
     apple_canvas.paste(apple_logo, (18, 18), apple_logo)
     apple_path = os.path.join(OUTPUT_DIR, "apple-touch-icon.png")
