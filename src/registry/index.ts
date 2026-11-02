@@ -70,6 +70,7 @@ import PdfProtectComponent from '@/tools/pdf-protect/Component';
 import PdfUnlockComponent from '@/tools/pdf-unlock/Component';
 import PdfRequestSignaturesComponent from '@/tools/pdf-request-signatures/Component';
 import PdfScannerComponent from '@/tools/pdf-scanner/Component';
+import MultiplePagesPerSheetComponent from '@/tools/multiple-pages-per-sheet/Component';
 
 export const TOOLS_MAP: Record<string, ToolDefinition> = {
   // ==========================================
@@ -618,6 +619,59 @@ export const TOOLS_MAP: Record<string, ToolDefinition> = {
     isPopular: true,
     component: PdfOrganizerComponent,
     supportedFormats: ['.pdf'],
+  },
+
+  'multiple-pages-per-sheet': {
+    id: 'multiple-pages-per-sheet',
+    name: 'Multiple Pages Per Sheet (N-Up)',
+    category: 'document-tools',
+    description: 'Combine multiple PDF pages (2, 4, 6, 8, 9, or 16 pages) onto a single sheet with custom reading direction, borders, and margins.',
+    seoTitle: 'Multiple Pages Per Sheet PDF Online Free — N-Up Imposition | HelpGate',
+    seoDescription: 'Print or convert multiple PDF pages onto a single sheet (2-up, 4-up, 6-up, 9-up). Combine 4 pages per sheet with custom borders, margins, and paper sizes.',
+    keywords: [
+      'multiple pages per sheet',
+      '4 pages in one pdf',
+      'n up pdf',
+      'print multiple pages on one page pdf',
+      '2 pages per sheet pdf',
+      'pdf imposition online',
+      'pages per sheet'
+    ],
+    executionType: 'client-only',
+    privacyTier: 'local-only',
+    version: '1.0.0',
+    icon: 'LayoutGrid',
+    isPopular: true,
+    isNew: true,
+    component: MultiplePagesPerSheetComponent,
+    supportedFormats: ['.pdf'],
+    faqs: [
+      {
+        question: 'How do I combine 4 PDF pages onto a single sheet?',
+        answer: 'Upload your PDF document to HelpGate Multiple Pages Per Sheet. By default, 4 pages per sheet (2×2 grid) is selected. Customize your sheet size (A4, Letter, etc.), margin, and border preferences, then click "Convert". Your new PDF will be generated instantly in your browser.',
+      },
+      {
+        question: 'What reading directions are supported?',
+        answer: 'You can arrange pages Row by row (Left to right or Right to left) or Column by column (Top to bottom or Right to left). This accommodates both standard Western documents and Right-to-Left / Asian reading orders.',
+      },
+      {
+        question: 'Are my confidential documents uploaded to any server?',
+        answer: 'No. All processing happens 100% locally in your browser memory using WebAssembly and standard client APIs. Your files never leave your device.',
+      },
+    ],
+    instructions: {
+      steps: [
+        'Upload your PDF file (or multiple PDF files to combine and impose).',
+        'Select the number of pages per sheet (1, 2, 4, 6, 8, 9, or 16).',
+        'Choose reading direction, border frames, margins, and sheet orientation.',
+        'Click "Convert" and download your newly compiled multi-page sheet PDF.',
+      ],
+      tips: [
+        'For lecture slides or presentations, 4-up or 6-up with thin borders saves paper while keeping text easily readable.',
+        'Use Auto Orientation to let HelpGate automatically choose the most space-efficient orientation for your pages.',
+      ],
+    },
+    relatedToolIds: ['pdf-merger', 'pdf-organizer', 'pdf-compress', 'pdf-crop'],
   },
 
   // ==========================================
@@ -1221,6 +1275,9 @@ export const TOOLS_MAP: Record<string, ToolDefinition> = {
 export const ALL_TOOLS = Object.values(TOOLS_MAP);
 
 export function getToolById(id: string): ToolDefinition | undefined {
+  if (id === 'pdf-multiple-pages-per-sheet' || id === 'n-up-pdf' || id === 'nup-pdf') {
+    return TOOLS_MAP['multiple-pages-per-sheet'];
+  }
   return TOOLS_MAP[id];
 }
 

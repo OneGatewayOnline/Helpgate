@@ -11,9 +11,15 @@ export function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-12 border-b border-border">
           {/* Brand Info */}
           <div className="lg:col-span-4 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md">
-                <Sparkles className="w-4 h-4" />
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="relative w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center bg-gradient-to-tr from-blue-600/20 via-sky-500/10 to-indigo-500/20 border border-blue-500/30 p-1 shadow-md shadow-blue-500/10 transition-transform group-hover:scale-105">
+                <img
+                  src="/logo.png"
+                  alt="HelpGate Logo"
+                  width={36}
+                  height={36}
+                  className="w-full h-full object-contain filter drop-shadow-[0_2px_4px_rgba(37,99,235,0.4)]"
+                />
               </div>
               <span className="font-bold text-xl tracking-tight text-foreground">
                 HelpGate
