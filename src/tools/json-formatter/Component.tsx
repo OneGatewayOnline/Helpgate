@@ -16,18 +16,21 @@ import {
 const SAMPLE_JSON = `{
   "platform": "HelpGate",
   "domain": "https://helpgate.in",
-  "parentCompany": "One Gateway Online Pvt Ltd",
+  "author": "One Gateway Online Pvt Ltd",
   "mission": "Free Technology. For Everyone.",
-  "features": [
-    "100% Client-Side Processing",
-    "Zero Subscriptions",
-    "Zero File Uploads",
-    "Privacy First"
-  ],
-  "stats": {
-    "toolsAvailable": 25,
-    "activeUsers": 50000,
-    "uptime": "99.99%"
+  "architecture": {
+    "execution": "100% Client-Side (In-Browser)",
+    "telemetry": "Zero Analytics / Zero Trackers",
+    "fileStorage": "Zero Cloud Uploads"
+  },
+  "catalog": {
+    "totalTools": 67,
+    "categories": [
+      "Document & PDF",
+      "Developer Utilities",
+      "Business & Financial",
+      "Productivity"
+    ]
   }
 }`;
 

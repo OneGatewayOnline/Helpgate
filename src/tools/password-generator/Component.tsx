@@ -37,12 +37,21 @@ export default function PasswordGeneratorComponent() {
       return;
     }
 
-    const randomValues = new Uint32Array(length);
-    crypto.getRandomValues(randomValues);
-
+    // Cryptographically unbiased rejection sampling to eliminate modulo bias
+    const poolLength = charPool.length;
+    const maxValid = Math.floor(0x100000000 / poolLength) * poolLength;
     let result = '';
-    for (let i = 0; i < length; i++) {
-      result += charPool[randomValues[i] % charPool.length];
+
+    while (result.length < length) {
+      const needed = length - result.length;
+      const buffer = new Uint32Array(Math.max(needed * 2, 32));
+      crypto.getRandomValues(buffer);
+
+      for (let i = 0; i < buffer.length && result.length < length; i++) {
+        if (buffer[i] < maxValid) {
+          result += charPool[buffer[i] % poolLength];
+        }
+      }
     }
 
     setPassword(result);

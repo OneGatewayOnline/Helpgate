@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Lock, Download, RefreshCw, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import { FileDropzone } from '@/components/tools/FileDropzone';
-import { PDFDocument } from 'pdf-lib';
+import { encryptPDF } from '@pdfsmaller/pdf-encrypt';
 
 export default function PdfProtectComponent() {
   const [file, setFile] = useState<File | null>(null);
@@ -26,19 +26,19 @@ export default function PdfProtectComponent() {
 
     try {
       const buffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
+      // Apply genuine ISO 32000 standard AES-256 PDF encryption
+      const encryptedBytes = await encryptPDF(new Uint8Array(buffer), password, {
+        algorithm: 'AES-256',
+        allowPrinting: !restrictPrinting,
+        allowCopying: !restrictCopying,
+      });
 
-      // Embed encryption notice and lock security metadata
-      pdfDoc.setTitle(`[Encrypted Protected] ${file.name.replace(/\.pdf$/i, '')}`);
-      pdfDoc.setProducer('HelpGate Cryptographic Security Engine');
-
-      const savedBytes = await pdfDoc.save({ useObjectStreams: false });
-      const blob = new Blob([savedBytes as any], { type: 'application/pdf' });
+      const blob = new Blob([encryptedBytes as any], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       setDownloadUrl(url);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Protect failed:', err);
-      alert('Error protecting PDF.');
+      alert(err?.message || 'Error protecting PDF.');
     } finally {
       setIsProcessing(false);
     }

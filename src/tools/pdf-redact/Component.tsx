@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { EyeOff, Download, CheckCircle2, RefreshCw, Plus, Trash2, ShieldAlert } from 'lucide-react';
+import { EyeOff, Download, CheckCircle2, RefreshCw, Plus, Trash2, ShieldAlert, ShieldCheck, Flame } from 'lucide-react';
 import { FileDropzone } from '@/components/tools/FileDropzone';
 import { PDFDocument, rgb } from 'pdf-lib';
+import { loadPdfDocument, renderPageToCanvas } from '@/lib/pdfjs';
 
 interface RedactionBox {
   id: string;
@@ -21,6 +22,7 @@ export default function PdfRedactComponent() {
   const [pageWidth, setPageWidth] = useState<number>(595);
   const [pageHeight, setPageHeight] = useState<number>(842);
   const [redactions, setRedactions] = useState<RedactionBox[]>([]);
+  const [redactionMode, setRedactionMode] = useState<'forensic' | 'vector'>('forensic');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
@@ -88,6 +90,52 @@ export default function PdfRedactComponent() {
 
     try {
       const buffer = await file.arrayBuffer();
+
+      // Mode 1: Forensic Secure Redaction (Rasterization & Text Stream Obliteration)
+      if (redactionMode === 'forensic') {
+        const pdfJsDoc = await loadPdfDocument(buffer);
+        const newPdf = await PDFDocument.create();
+
+        for (let i = 1; i <= pdfJsDoc.numPages; i++) {
+          const page = await pdfJsDoc.getPage(i);
+          const canvas = await renderPageToCanvas(page, 2.0);
+          const ctx = canvas.getContext('2d');
+
+          if (ctx) {
+            const scale = 2.0;
+            const pageRedactions = redactions.filter((r) => r.page === i);
+            for (const r of pageRedactions) {
+              ctx.fillStyle = r.color === 'black' ? '#000000' : '#ffffff';
+              // Convert PDF coordinates (origin at bottom-left) to canvas coordinates (origin at top-left)
+              const canvasX = r.x * scale;
+              const canvasY = (pageHeight - r.y - r.height) * scale;
+              const canvasW = r.width * scale;
+              const canvasH = r.height * scale;
+              ctx.fillRect(canvasX, canvasY, canvasW, canvasH);
+            }
+          }
+
+          const imgDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+          const imgBytes = await (await fetch(imgDataUrl)).arrayBuffer();
+          const embeddedImg = await newPdf.embedJpg(imgBytes);
+
+          const newPage = newPdf.addPage([pageWidth, pageHeight]);
+          newPage.drawImage(embeddedImg, {
+            x: 0,
+            y: 0,
+            width: pageWidth,
+            height: pageHeight,
+          });
+        }
+
+        const savedBytes = await newPdf.save();
+        const blob = new Blob([savedBytes as any], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setDownloadUrl(url);
+        return;
+      }
+
+      // Mode 2: Vector Overlay Masking
       const pdf = await PDFDocument.load(buffer);
       const pages = pdf.getPages();
 
@@ -244,11 +292,48 @@ export default function PdfRedactComponent() {
             ))}
           </div>
 
-          <div className="p-3.5 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5">
-            <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
-            <p>
-              Redactions permanently paint opaque vector boxes into the PDF. Once applied and downloaded, covered text and images cannot be recovered.
-            </p>
+          {/* Security Level / Redaction Mode Selector */}
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl space-y-3">
+            <label className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
+              Redaction Pipeline & Security Level
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setRedactionMode('forensic')}
+                className={`p-3 rounded-xl border text-left transition-all ${
+                  redactionMode === 'forensic'
+                    ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-100 ring-2 ring-indigo-600/20'
+                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300'
+                }`}
+              >
+                <div className="flex items-center gap-2 font-semibold text-xs mb-1">
+                  <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  Forensic Flattening (Level 3 Security)
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Rasterizes pages into images. Completely burns redactions into pixels. Underlying text streams, OCR fonts, and metadata are permanently destroyed.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setRedactionMode('vector')}
+                className={`p-3 rounded-xl border text-left transition-all ${
+                  redactionMode === 'vector'
+                    ? 'border-indigo-600 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-100 ring-2 ring-indigo-600/20'
+                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300'
+                }`}
+              >
+                <div className="flex items-center gap-2 font-semibold text-xs mb-1">
+                  <EyeOff className="w-4 h-4 text-slate-500" />
+                  Vector Masking Overlay (Level 2)
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Draws opaque shapes over content. Keeps un-redacted text sharp and selectable. Fast, but underlying text stream is visually occluded rather than erased.
+                </p>
+              </button>
+            </div>
           </div>
         </div>
       )}

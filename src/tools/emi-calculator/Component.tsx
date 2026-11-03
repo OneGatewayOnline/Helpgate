@@ -24,7 +24,11 @@ export default function EmiCalculatorComponent() {
         (Math.pow(1 + monthlyRate, totalMonths) - 1)
     );
     totalPayment = emi * totalMonths;
-    totalInterest = totalPayment - principal;
+    totalInterest = Math.max(0, totalPayment - principal);
+  } else if (monthlyRate === 0 && totalMonths > 0) {
+    emi = Math.round(principal / totalMonths);
+    totalPayment = principal;
+    totalInterest = 0;
   }
 
   const principalPercent = totalPayment > 0 ? Math.round((principal / totalPayment) * 100) : 50;

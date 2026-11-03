@@ -3,6 +3,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { ServiceWorkerRegister } from '@/components/layout/ServiceWorkerRegister';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://helpgate.in'),
@@ -87,6 +88,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="dark">
       <body className="min-h-screen flex flex-col bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
         <ThemeProvider>
+          <ServiceWorkerRegister />
           <Header />
           <div className="flex-1">
             {children}

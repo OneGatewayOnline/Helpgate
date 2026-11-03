@@ -34,6 +34,7 @@
     "deploy": "next build && wrangler deploy"
   },
   "dependencies": {
+    "@pdfsmaller/pdf-encrypt": "^1.2.0",
     "clsx": "^2.1.1",
     "jsbarcode": "^3.12.3",
     "jszip": "^3.10.2",

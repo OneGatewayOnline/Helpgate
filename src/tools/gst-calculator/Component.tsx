@@ -17,24 +17,29 @@ export default function GstCalculatorComponent() {
 
   const activeRate = isCustom ? customRate : rate;
 
-  // Calculation formulas
+  // Calculation formulas with robust edge-case validation
+  const safeAmount = Math.max(0, isNaN(amount) ? 0 : amount);
+  const safeRate = Math.max(0, Math.min(100, isNaN(activeRate) ? 0 : activeRate));
+
+  const round2 = (num: number) => Math.round((num + Number.EPSILON) * 100) / 100;
+
   let netAmount = 0;
   let gstAmount = 0;
   let totalAmount = 0;
 
   if (mode === 'exclusive') {
-    netAmount = amount;
-    gstAmount = (amount * activeRate) / 100;
-    totalAmount = netAmount + gstAmount;
+    netAmount = round2(safeAmount);
+    gstAmount = round2((safeAmount * safeRate) / 100);
+    totalAmount = round2(netAmount + gstAmount);
   } else {
-    totalAmount = amount;
-    netAmount = (amount * 100) / (100 + activeRate);
-    gstAmount = totalAmount - netAmount;
+    totalAmount = round2(safeAmount);
+    netAmount = safeRate >= 0 ? round2((safeAmount * 100) / (100 + safeRate)) : totalAmount;
+    gstAmount = round2(totalAmount - netAmount);
   }
 
-  const cgst = supplyType === 'intra' ? gstAmount / 2 : 0;
-  const sgst = supplyType === 'intra' ? gstAmount / 2 : 0;
-  const igst = supplyType === 'inter' ? gstAmount : 0;
+  const cgst = supplyType === 'intra' ? round2(gstAmount / 2) : 0;
+  const sgst = supplyType === 'intra' ? round2(gstAmount / 2) : 0;
+  const igst = supplyType === 'inter' ? round2(gstAmount) : 0;
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -99,7 +104,10 @@ Final Gross Amount: ${formatCurrency(totalAmount)}`;
               type="number"
               min="0"
               value={amount || ''}
-              onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                setAmount(isNaN(val) ? 0 : Math.max(0, val));
+              }}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-background text-foreground font-mono text-base font-bold outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -148,7 +156,10 @@ Final Gross Amount: ${formatCurrency(totalAmount)}`;
               min="0"
               max="100"
               value={customRate}
-              onChange={(e) => setCustomRate(parseFloat(e.target.value) || 0)}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                setCustomRate(isNaN(val) ? 0 : Math.max(0, Math.min(100, val)));
+              }}
               className="w-24 px-3 py-1.5 rounded-lg border border-border bg-background text-foreground font-mono text-sm font-bold outline-none"
             />
             <span className="text-xs text-muted-foreground">%</span>
