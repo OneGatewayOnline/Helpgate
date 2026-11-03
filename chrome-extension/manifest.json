@@ -1,0 +1,71 @@
+{
+  "manifest_version": 3,
+  "name": "HelpGate Tools — Spendo Ad Intel & WhatsApp Suite",
+  "short_name": "HelpGate Tools",
+  "version": "1.0.0",
+  "description": "Official HelpGate browser extension: Full Spendo Meta Ad Library intelligence (spend, revenue, ROAS, HD creative downloader) & WhatsApp Web contact tools. 100% free forever.",
+  "author": "One Gateway Online Pvt Ltd",
+  "homepage_url": "https://helpgate.in",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "downloads",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://web.whatsapp.com/*",
+    "https://*.facebook.com/ads/library/*",
+    "https://www.facebook.com/ads/library/*",
+    "https://web.facebook.com/ads/library/*",
+    "https://facebook.com/ads/library/*",
+    "https://*.fbcdn.net/*",
+    "https://*.cdninstagram.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["whatsapp-content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://*.facebook.com/ads/library/*",
+        "https://www.facebook.com/ads/library/*",
+        "https://web.facebook.com/ads/library/*",
+        "https://facebook.com/ads/library/*"
+      ],
+      "js": ["spendo-content.js"],
+      "css": ["spendo-styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*", "spendo-styles.css"],
+      "matches": [
+        "https://*.facebook.com/*",
+        "https://web.whatsapp.com/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    },
+    "default_title": "HelpGate Tools & Spendo Intel"
+  }
+}

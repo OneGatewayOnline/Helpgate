@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HelpGate Tools — Spendo Ad Intel &amp; WhatsApp Suite</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 390px;
+      max-height: 590px;
+      overflow-y: auto;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #09090b;
+      color: #f4f4f5;
+      padding: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .header-logo {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header-logo img {
+      width: 100%;
+      height: 100%;
+      object-contain: contain;
+    }
+
+    .title { flex: 1; }
+
+    .title h1 {
+      font-size: 15px;
+      color: #ffffff;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: -0.2px;
+    }
+
+    .title p {
+      font-size: 11px;
+      color: #a1a1aa;
+      margin-top: 1px;
+    }
+
+    .free-badge {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* ── Tab Bar ── */
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(24, 24, 27, 0.8);
+      padding: 3px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-tab-btn {
+      flex: 1;
+      padding: 7px 4px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #a1a1aa;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .nav-tab-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-tab-btn.active {
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+
+    /* ── Status Bar ── */
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      background: #18181b;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse 2s infinite;
+      flex-shrink: 0;
+    }
+
+    .status-dot.inactive {
+      background: #eab308;
+      animation: none;
+    }
+
+    .status-dot.error {
+      background: #ef4444;
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .status-text {
+      font-size: 11px;
+      color: #d4d4d8;
+      flex: 1;
+      font-weight: 500;
+    }
+
+    /* ── Tab Panes ── */
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* ── Cards & Tools ── */
+    .hero-card {
+      background: linear-gradient(135deg, #091e3a 0%, #0f172a 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-card h2 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #38bdf8;
+    }
+
+    .hero-card p {
+      font-size: 11px;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+
+    .features-badges {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .feature-pill {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #7dd3fc;
+    }
+
+    /* ── Live Stats Strip ── */
+    .stats-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: #18181b;
+      border-radius: 8px;
+      padding: 7px 4px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-card .stat-num {
+      font-size: 15px;
+      font-weight: 700;
+      color: #60a5fa;
+    }
+
+    .stat-card .stat-label {
+      font-size: 9px;
+      color: #a1a1aa;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-top: 1px;
+    }
+
+    /* ── Buttons ── */
+    .tools {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tool-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      background: #18181b;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      outline: none;
+      color: #ffffff;
+    }
+
+    .tool-btn:hover:not(:disabled) {
+      background: #27272a;
+      border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .tool-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .tool-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .tool-icon.spendo     { background: linear-gradient(135deg, #0284c7, #2563eb); color: white; }
+    .tool-icon.sync       { background: linear-gradient(135deg, #059669, #10b981); color: white; }
+    .tool-icon.vault      { background: linear-gradient(135deg, #d97706, #f59e0b); color: white; }
+    .tool-icon.whatsapp   { background: linear-gradient(135deg, #16a34a, #22c55e); color: white; }
+    .tool-icon.wa-full    { background: linear-gradient(135deg, #065f46, #059669); color: white; }
+    .tool-icon.chat       { background: linear-gradient(135deg, #0284c7, #38bdf8); color: white; }
+    .tool-icon.pdf        { background: linear-gradient(135deg, #dc2626, #f87171); color: white; }
+    .tool-icon.tool       { background: linear-gradient(135deg, #4f46e5, #818cf8); color: white; }
+
+    .tool-info { flex: 1; min-width: 0; }
+    .tool-info h3 {
+      font-size: 12px;
+      font-weight: 600;
+      color: #f4f4f5;
+    }
+    .tool-info p {
+      font-size: 10px;
+      color: #a1a1aa;
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #38bdf8;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: none;
+      flex-shrink: 0;
+    }
+
+    .tool-btn.loading .spinner { display: block; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Direct Chat Box ── */
+    .direct-chat-box {
+      background: #18181b;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 10px;
+    }
+
+    .direct-chat-box h4 {
+      font-size: 12px;
+      color: #f4f4f5;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .input-field {
+      flex: 1;
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 11px;
+      color: #f4f4f5;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: #3b82f6;
+    }
+
+    .action-btn-small {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0 12px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .action-btn-small:hover {
+      background: #1d4ed8;
+    }
+
+    /* ── Progress Bar ── */
+    .progress-bar {
+      display: none;
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: #18181b;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .progress-bar.active { display: block; }
+
+    .progress-track {
+      height: 4px;
+      background: #27272a;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .progress-text {
+      font-size: 10px;
+      color: #a1a1aa;
+      text-align: center;
+    }
+
+    /* ── Saved Vault List ── */
+    .vault-container {
+      margin-top: 10px;
+      max-height: 170px;
+      overflow-y: auto;
+      background: #18181b;
+      border-radius: 8px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .vault-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 4px;
+      border-bottom: 1px solid #27272a;
+      font-size: 11px;
+    }
+
+    .vault-item:last-child { border-bottom: none; }
+
+    .vault-item-title {
+      font-weight: 600;
+      color: #f4f4f5;
+    }
+
+    .vault-item-sub {
+      font-size: 10px;
+      color: #a1a1aa;
+    }
+
+    .vault-del-btn {
+      background: none;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 2px 4px;
+    }
+
+    /* ── Web Tools Grid ── */
+    .tools-grid {
+      display: grid;
+      grid-cols: 2;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .tool-tile {
+      background: #18181b;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      color: white;
+    }
+
+    .tool-tile:hover {
+      background: #27272a;
+      border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .tool-tile h4 {
+      font-size: 11px;
+      font-weight: 600;
+      color: #f4f4f5;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tool-tile p {
+      font-size: 9px;
+      color: #a1a1aa;
+      margin-top: 2px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 10px;
+      color: #71717a;
+    }
+
+    .footer a {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer a:hover { text-decoration: underline; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      padding: 8px 12px;
+      background: #18181b;
+      color: #f4f4f5;
+      border: 1px solid #3b82f6;
+      border-radius: 8px;
+      font-size: 11px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .toast.error {
+      border-color: #ef4444;
+      background: #2b1113;
+      color: #fca5a5;
+    }
+
+    .toast.success {
+      border-color: #10b981;
+      background: #0d2818;
+      color: #6ee7b7;
+    }
+  </style>
+</head>
+<body>
+  <!-- Brand Header -->
+  <div class="header">
+    <div class="header-logo">
+      <img src="icons/icon-48.png" alt="HelpGate Logo">
+    </div>
+    <div class="title">
+      <h1>HelpGate Tools <span class="free-badge">100% Free</span></h1>
+      <p id="versionLabel">Spendo Ad Intel &amp; WhatsApp Suite</p>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="nav-tabs">
+    <button class="nav-tab-btn active" data-tab="tab-spendo">🎯 Spendo Intel</button>
+    <button class="nav-tab-btn" data-tab="tab-wa">💬 WhatsApp</button>
+    <button class="nav-tab-btn" data-tab="tab-tools">⚡ Web Tools</button>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="status" id="status">
+    <div class="status-dot" id="statusDot"></div>
+    <span class="status-text" id="statusText">Checking…</span>
+  </div>
+
+  <!-- ═════════════════ TAB 1: SPENDO AD INTEL ═════════════════ -->
+  <div class="tab-pane active" id="pane-spendo">
+    <div class="hero-card">
+      <h2>🎯 Spendo Meta Ad Intel</h2>
+      <p>Analyze Meta competitor spend, revenue, ROAS, and 3s hook rate. Download HD creatives directly inside Meta Ads Library.</p>
+      <div class="features-badges">
+        <span class="feature-pill">₹ Lakhs &amp; Crores</span>
+        <span class="feature-pill">Day &amp; Total Spend</span>
+        <span class="feature-pill">Sales &amp; ROAS</span>
+        <span class="feature-pill">HD Video Downloader</span>
+        <span class="feature-pill">Targeting Intel</span>
+      </div>
+    </div>
+
+    <!-- Live Stats Bar (Meta Ad Library) -->
+    <div class="stats-row" id="spendoStatsRow">
+      <div class="stat-card">
+        <div class="stat-num" id="spendoAdsCount">0</div>
+        <div class="stat-label">Ads Detected</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="spendoTotalSpend">₹0</div>
+        <div class="stat-label">Total Spend</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="spendoWinningCount">0</div>
+        <div class="stat-label">Winning Ads</div>
+      </div>
+    </div>
+
+    <div class="tools">
+      <button class="tool-btn" id="openMetaAds" title="Open Meta Ad Library with Spendo intelligence active">
+        <div class="tool-icon spendo">🔍</div>
+        <div class="tool-info">
+          <h3>Open Meta Ads Library</h3>
+          <p>Search any brand or competitor in India</p>
+        </div>
+      </button>
+
+      <button class="tool-btn" id="exportSpendoCSV" title="Export all currently analyzed ads as a CSV spreadsheet">
+        <div class="tool-icon sync">📊</div>
+        <div class="tool-info">
+          <h3>Export Ad Intel (CSV)</h3>
+          <p>Download full spend, sales &amp; creative report</p>
+        </div>
+      </button>
+
+      <button class="tool-btn" id="toggleVaultBtn" title="View saved competitor ads in your local vault">
+        <div class="tool-icon vault">⭐</div>
+        <div class="tool-info">
+          <h3>Saved Ads Vault (<span id="vaultCount">0</span>)</h3>
+          <p>Quick access to saved competitor creatives</p>
+        </div>
+      </button>
+    </div>
+
+    <!-- Saved Vault List Container -->
+    <div class="vault-container" id="vaultContainer" style="display:none;">
+      <div style="font-size:11px;font-weight:700;color:#38bdf8;margin-bottom:6px;display:flex;justify-content:space-between;">
+        <span>Saved Competitor Ads</span>
+        <button id="clearVaultBtn" style="border:none;background:none;color:#ef4444;font-size:10px;cursor:pointer;">Clear All</button>
+      </div>
+      <div id="vaultList"><div style="color:#71717a;font-size:11px;text-align:center;padding:12px;">No saved ads yet. Click ⭐ Save on any ad in Meta Ad Library.</div></div>
+    </div>
+  </div>
+
+  <!-- ═════════════════ TAB 2: WHATSAPP SUITE ═════════════════ -->
+  <div class="tab-pane" id="pane-wa">
+    <!-- Quick Extract & Full Extract Buttons -->
+    <div class="tools">
+      <button class="tool-btn" id="waExtractQuick" title="Extract visible contacts from WhatsApp Web">
+        <div class="tool-icon whatsapp">💬</div>
+        <div class="tool-info">
+          <h3>Quick Extract Contacts</h3>
+          <p>Grab visible WhatsApp chat contacts as CSV</p>
+        </div>
+        <div class="spinner"></div>
+      </button>
+
+      <button class="tool-btn" id="waExtractFull" title="Scroll through all chats and extract contacts">
+        <div class="tool-icon wa-full">📋</div>
+        <div class="tool-info">
+          <h3>Full Auto-Scroll Extract</h3>
+          <p>Scans entire chat list &amp; exports all numbers</p>
+        </div>
+        <div class="spinner"></div>
+      </button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="waProgress">
+      <div class="progress-track"><div class="progress-fill" id="waProgressFill"></div></div>
+      <div class="progress-text" id="waProgressText">Scanning…</div>
+    </div>
+
+    <!-- Extracted Stats -->
+    <div class="stats-row" id="waStats" style="margin-top:10px;">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-label">Total Found</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statWithPhone">0</div>
+        <div class="stat-label">With Phone</div>
+      </div>
+      <button id="copyNumbersBtn" class="action-btn-small" style="height:auto;padding:0 8px;font-size:10px;" title="Copy all phone numbers">Copy Numbers</button>
+    </div>
+
+    <!-- Direct Chat Utility (Public Tool) -->
+    <div class="direct-chat-box">
+      <h4><span>⚡</span> Direct Chat (No Contact Save)</h4>
+      <div class="input-row">
+        <input type="text" id="directPhoneInput" class="input-field" placeholder="Phone (e.g. 9876543210)">
+        <button id="directChatBtn" class="action-btn-small">Chat</button>
+      </div>
+      <input type="text" id="directMsgInput" class="input-field" style="width:100%;margin-bottom:4px;" placeholder="Optional message…">
+      <p style="font-size:9px;color:#71717a;margin-top:4px;">Opens official WhatsApp chat directly without adding to contacts.</p>
+    </div>
+
+    <!-- Privacy Note -->
+    <div style="margin-top:10px;padding:8px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;font-size:10px;color:#a1a1aa;line-height:1.4;">
+      <strong style="color:#34d399;">🔒 100% Client-Side Privacy:</strong> Contacts are extracted locally in browser memory. Zero server uploads.
+    </div>
+  </div>
+
+  <!-- ═════════════════ TAB 3: HELPGATE WEB TOOLS ═════════════════ -->
+  <div class="tab-pane" id="pane-tools">
+    <div class="tools-grid">
+      <div class="tool-tile" data-url="https://helpgate.in/tools/pdf-merger/">
+        <h4><span>📑</span> Merge PDF</h4>
+        <p>Combine multiple PDFs into one</p>
+      </div>
+      <div class="tool-tile" data-url="https://helpgate.in/tools/pdf-to-word/">
+        <h4><span>📝</span> PDF to Word</h4>
+        <p>Convert PDF to DOCX privately</p>
+      </div>
+      <div class="tool-tile" data-url="https://helpgate.in/tools/pdf-compress/">
+        <h4><span>🗜️</span> Compress PDF</h4>
+        <p>Reduce file size locally</p>
+      </div>
+      <div class="tool-tile" data-url="https://helpgate.in/tools/gst-calculator/">
+        <h4><span>💰</span> GST Calculator</h4>
+        <p>India tax breakdown (18%)</p>
+      </div>
+      <div class="tool-tile" data-url="https://helpgate.in/tools/qr-code-generator/">
+        <h4><span>📱</span> QR Generator</h4>
+        <p>Custom colors &amp; PNG export</p>
+      </div>
+      <div class="tool-tile" data-url="https://helpgate.in/tools/json-formatter/">
+        <h4><span>⚙️</span> JSON Formatter</h4>
+        <p>Prettify &amp; validate syntax</p>
+      </div>
+    </div>
+
+    <!-- Quick Utilities -->
+    <div class="tools">
+      <button class="tool-btn" id="captureScreen" title="Take a high-res screenshot of the visible tab">
+        <div class="tool-icon tool">📷</div>
+        <div class="tool-info">
+          <h3>Screenshot Current Tab</h3>
+          <p>Capture visible webpage area as PNG</p>
+        </div>
+        <div class="spinner"></div>
+      </button>
+
+      <button class="tool-btn" id="openHelpgate" title="Explore all 66+ free tools on helpgate.in">
+        <div class="tool-icon spendo">🌐</div>
+        <div class="tool-info">
+          <h3>Explore HelpGate.in</h3>
+          <p>66+ free client-side PDF &amp; dev tools</p>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>HelpGate Tools &nbsp;|&nbsp; <a href="https://helpgate.in" target="_blank">helpgate.in</a> &nbsp;|&nbsp; 100% Free Forever</p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
